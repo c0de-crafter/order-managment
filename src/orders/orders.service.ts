@@ -9,16 +9,18 @@ export class OrdersService {
   async createOrder(data: {
     userId: number;
     productLink: string;
-    details: string;
+    details: any;
     supplierId: number;
-    status: string;
+    statusId: number;
+    code?: string;
   }): Promise<Order> {
-    const { userId, supplierId, ...rest } = data;
+    const { userId, supplierId, statusId, ...rest } = data;
     return this.prisma.order.create({
       data: {
         ...rest,
         user: { connect: { id: userId } },
         supplier: { connect: { id: supplierId } },
+        status: { connect: { id: statusId } },
       },
     });
   }
@@ -31,10 +33,10 @@ export class OrdersService {
     return this.prisma.order.findMany();
   }
 
-  async updateOrderStatus(orderId: number, status: string): Promise<Order> {
+  async updateOrderStatus(orderId: number, statusId: number): Promise<Order> {
     return this.prisma.order.update({
       where: { id: orderId },
-      data: { status },
+      data: { status: { connect: { id: statusId } } },
     });
   }
 

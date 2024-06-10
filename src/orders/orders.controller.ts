@@ -27,9 +27,10 @@ export class OrdersController {
       example: {
         userId: 1,
         productLink: 'http://example.com/product',
-        details: 'Some details',
+        details: { color: 'red', size: 'M' },
         supplierId: 1,
-        status: 'pending',
+        statusId: 1,
+        code: 'ABC123',
       },
     },
   })
@@ -38,9 +39,10 @@ export class OrdersController {
     orderData: {
       userId: number;
       productLink: string;
-      details: string;
+      details: any;
       supplierId: number;
-      status: string;
+      statusId: number;
+      code?: string;
     },
   ): Promise<Order> {
     return this.ordersService.createOrder(orderData);
@@ -57,19 +59,24 @@ export class OrdersController {
   }
 
   @Patch(':orderId')
-  @ApiBody({ schema: { example: { status: 'shipped' } } })
+  @ApiBody({ schema: { example: { statusId: 2 } } })
   updateOrderStatus(
     @Param('orderId') orderId: string,
-    @Body('status') status: string,
+    @Body('statusId') statusId: number,
   ): Promise<Order> {
-    return this.ordersService.updateOrderStatus(Number(orderId), status);
+    return this.ordersService.updateOrderStatus(Number(orderId), statusId);
   }
 
   @Put(':orderId')
   updateOrder(
     @Param('orderId') orderId: string,
     @Body()
-    orderData: { productLink?: string; details?: string; status?: string },
+    orderData: {
+      productLink?: string;
+      details?: any;
+      statusId?: number;
+      code?: string;
+    },
   ): Promise<Order> {
     return this.ordersService.updateOrder(Number(orderId), orderData);
   }

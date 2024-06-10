@@ -21,8 +21,14 @@ export class SuppliersController {
   constructor(private suppliersService: SuppliersService) {}
 
   @Post()
-  @ApiBody({ schema: { example: { name: 'Supplier Name' } } })
-  createSupplier(@Body() supplierData: { name: string }): Promise<Supplier> {
+  @ApiBody({
+    schema: {
+      example: { name: 'Supplier Name', website: 'http://example.com' },
+    },
+  })
+  createSupplier(
+    @Body() supplierData: { name: string; website: string },
+  ): Promise<Supplier> {
     return this.suppliersService.createSupplier(supplierData);
   }
 
@@ -39,7 +45,7 @@ export class SuppliersController {
   @Put(':id')
   updateSupplier(
     @Param('id') id: string,
-    @Body() supplierData: { name?: string },
+    @Body() supplierData: { name?: string; website?: string },
   ): Promise<Supplier> {
     return this.suppliersService.updateSupplier(Number(id), supplierData);
   }

@@ -29,18 +29,27 @@ model Profile {
 }
 
 model Order {
-  id          Int      @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   userId      Int
   productLink String
-  details     String
-  status      String
+  details     Json
+  statusId    Int
   supplierId  Int
-  user        User     @relation(fields: [userId], references: [id])
-  supplier    Supplier @relation(fields: [supplierId], references: [id])
+  code        String?      // Optional code for orders
+  user        User         @relation(fields: [userId], references: [id])
+  supplier    Supplier     @relation(fields: [supplierId], references: [id])
+  status      OrderStatus  @relation(fields: [statusId], references: [id])
 }
 
 model Supplier {
   id       Int      @id @default(autoincrement())
   name     String
+  website  String   // Link to supplier's website
   orders   Order[]
+}
+
+model OrderStatus {
+  id    Int     @id @default(autoincrement())
+  name  String  @unique
+  orders Order[]
 }

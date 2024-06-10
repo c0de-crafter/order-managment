@@ -31,6 +31,9 @@ export class OrdersController {
         supplierId: 1,
         statusId: 1,
         code: 'ABC123',
+        purchaseCost: 100.0,
+        saleCost: 150.0,
+        cartId: 1,
       },
     },
   })
@@ -43,14 +46,17 @@ export class OrdersController {
       supplierId: number;
       statusId: number;
       code?: string;
+      purchaseCost?: number;
+      saleCost?: number;
+      cartId?: number;
     },
   ): Promise<Order> {
     return this.ordersService.createOrder(orderData);
   }
 
-  @Get(':userId')
-  getOrdersByUserId(@Param('userId') userId: string): Promise<Order[]> {
-    return this.ordersService.getOrdersByUserId(Number(userId));
+  @Get(':id')
+  getOrdersId(@Param('id') id: string): Promise<Order> {
+    return this.ordersService.getOrdersById(Number(id));
   }
 
   @Get()
@@ -59,12 +65,23 @@ export class OrdersController {
   }
 
   @Patch(':orderId')
-  @ApiBody({ schema: { example: { statusId: 2 } } })
+  @ApiBody({
+    schema: {
+      example: { statusId: 2, purchaseCost: 100.0, saleCost: 150.0, cartId: 1 },
+    },
+  })
   updateOrderStatus(
     @Param('orderId') orderId: string,
     @Body('statusId') statusId: number,
+    @Body('purchaseCost') purchaseCost?: number,
+    @Body('saleCost') saleCost?: number,
   ): Promise<Order> {
-    return this.ordersService.updateOrderStatus(Number(orderId), statusId);
+    return this.ordersService.updateOrderStatus(
+      Number(orderId),
+      statusId,
+      purchaseCost,
+      saleCost,
+    );
   }
 
   @Put(':orderId')
@@ -76,6 +93,9 @@ export class OrdersController {
       details?: any;
       statusId?: number;
       code?: string;
+      purchaseCost?: number;
+      saleCost?: number;
+      cartId?: number;
     },
   ): Promise<Order> {
     return this.ordersService.updateOrder(Number(orderId), orderData);
